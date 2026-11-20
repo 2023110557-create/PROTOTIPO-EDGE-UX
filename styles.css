@@ -1,5 +1,4 @@
-/* VARIABLES FLUENT DESIGN */
-:root {
+root {
     --edge-bg-top: #DEE1E6; 
     --edge-toolbar: #FFFFFF;
     --edge-tab-active: #FFFFFF;
@@ -24,7 +23,7 @@ body.dark-mode {
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI Variable', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-body { color: var(--edge-text); display: flex; flex-direction: column; height: 100vh; overflow: hidden; background-color: var(--edge-bg-top); }
+body { color: var(--edge-text); display: flex; flex-direction: column; height: 100vh; height: 100dvh; overflow: hidden; background-color: var(--edge-bg-top); }
 
 /* --- PANTALLA SELECTOR DE PERFILES Y PIN --- */
 .login-overlay { position: fixed; top:0; left:0; right:0; bottom:0; background: var(--edge-bg-top); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 15px; }
@@ -540,3 +539,138 @@ a.bp-card strong { font-size: 16px; line-height: 1.35; }
 .bp-imgs a { display: block; margin-bottom: 12px; break-inside: avoid; }
 .bp-imgs img { width: 100%; display: block; border-radius: 12px; background: rgba(128,128,128,0.15); }
 @media (max-width: 1000px) { .bp-cols { grid-template-columns: 1fr; padding-left: 0; gap: 20px; } .bp-tabs { padding-left: 28px; } }
+
+/* =====================================================================
+   DISEÑO RESPONSIVO (tablet y móvil)
+   ===================================================================== */
+html { -webkit-text-size-adjust: 100%; }
+.tabs-container { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; min-width: 0; }
+.tabs-container::-webkit-scrollbar { display: none; }
+.titlebar, .toolbar { min-width: 0; }
+.address-bar { min-width: 0; }
+.address-bar input { min-width: 0; }
+
+/* Pantallas táctiles: áreas de toque más cómodas */
+@media (pointer: coarse) {
+    .tool-btn { width: 40px; height: 40px; }
+    .menu-item, .flyout-item { min-height: 44px; }
+    .tab-close { width: 28px; height: 28px; }
+    input, select, textarea { font-size: 16px; } /* evita el zoom automático de iOS */
+}
+
+/* ---------- Tablet (≤ 900 px) ---------- */
+@media (max-width: 900px) {
+    .tab { min-width: 120px; }
+    .toolbar { gap: 6px; padding: 0 6px; }
+    #btnHome, #btnExtensions { display: none; }
+    .copilot-btn span { display: none; }
+    .copilot-btn { padding: 0 9px; }
+    .news-cards-grid { grid-template-columns: 1fr; }
+    .bing-page { padding: 14px 18px 48px; }
+    .bp-tabs { margin: 14px -18px 18px; padding: 0 18px; }
+    .page-actions input { min-width: 0; width: 100%; }
+    .internal-content { padding-left: 12px; padding-right: 12px; }
+    .split-body { padding: 14px; }
+}
+
+/* ---------- Móvil (≤ 640 px) ---------- */
+@media (max-width: 640px) {
+    .titlebar { height: 40px; padding-left: 4px; }
+    .tab { min-width: 104px; max-width: 160px; padding: 0 8px; }
+    .tab-title { max-width: 80px; }
+    .tab-group-chip { display: none; }
+
+    /* Barra de herramientas compacta: lo secundario pasa al menú ⋯ */
+    .toolbar { height: 46px; gap: 2px; padding: 0 4px; }
+    #btnForward, #btnRefresh, #btnFavPanel, #btnDownloads { display: none; }
+    .nav-arrows { flex-shrink: 0; }
+    .extensions-profile { flex-shrink: 0; gap: 0; }
+    .profile-btn { margin: 0 2px; }
+    .copilot-btn { margin-left: 2px; }
+    .address-bar { padding: 0 10px; height: 34px; }
+    .address-bar input { margin: 0 6px; font-size: 14px; text-overflow: ellipsis; }
+
+    /* Menús y paneles ocupan el ancho disponible */
+    .edge-menu, .edge-panel, .flyout-panel {
+        left: 8px !important; right: 8px !important; width: auto !important; min-width: 0 !important;
+        max-width: none; max-height: calc(100dvh - 100px); overflow-y: auto;
+    }
+    .edge-menu:not(.submenu), .edge-panel, .flyout-panel:not(.submenu) { top: 90px !important; }
+    .submenu { max-height: 70dvh; }
+    .menu-item .sc { display: none; }
+    .qs-row { grid-template-columns: repeat(3, 1fr); }
+
+    /* Copilot: panel a pantalla completa sobre el contenido */
+    .copilot-panel.open { position: absolute; top: 0; right: 0; bottom: 0; left: 0; width: 100%; z-index: 350; border-left: 0; }
+    .copilot-panel > * { min-width: 0; }
+    .cp-menu { min-width: 0; max-width: calc(100vw - 24px); }
+
+    /* Barra de búsqueda en la página */
+    .find-bar { top: 92px; left: 8px; right: 8px; }
+    .find-bar input { flex: 1; width: auto; min-width: 0; }
+
+    /* Pantalla de inicio */
+    #view-home { padding: 14px; }
+    .center-stage { margin-top: 0; }
+    .edge-logo { width: 56px; margin-bottom: 20px; }
+    .big-search-box { height: 48px; padding: 0 16px; }
+    .big-search-box input { margin: 0 10px; font-size: 15px; min-width: 0; }
+    .quick-links { gap: 14px; margin-top: 26px; }
+    .quick-link-icon { width: 48px; height: 48px; }
+    .customize-btn { bottom: 14px; right: 14px; padding: 8px 14px; font-size: 13px; }
+    .news-feed-container { margin-top: 22px; padding: 12px; }
+    .news-feed-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+
+    /* Modales y login */
+    .login-box { padding: 22px 16px; }
+    .profile-card { width: 96px; }
+    .modal-content { padding: 22px 16px; max-height: 94dvh; overflow-y: auto; }
+    .modal-options { flex-direction: column; gap: 10px; }
+
+    /* Vista dividida: apilada (arriba / abajo) */
+    .viewport.split .view { right: 0; bottom: 50%; }
+    .split-pane { top: 50%; left: 0; width: 100%; border-left: 0; border-top: 2px solid var(--edge-accent); }
+
+    /* Ajustes / páginas internas */
+    .settings-card { padding: 4px 14px; }
+    .settings-nav button { padding: 8px 10px; font-size: 13px; }
+    .custom-sidebar { width: min(300px, 100vw); right: -100vw; top: 86px; }
+
+    /* Resultados de búsqueda (página tipo Bing) */
+    .bing-page { padding: 10px 12px 40px; }
+    .bp-top { gap: 8px; }
+    .bp-brand { min-width: 0; font-size: 17px; }
+    .bp-box { height: 44px; padding: 0 14px; }
+    .bp-box input { font-size: 15px; }
+    .bp-tabs { gap: 18px; margin: 10px -12px 14px; padding: 0 12px; }
+    .bp-tab { font-size: 14px; }
+    .bp-cols { gap: 16px; }
+    .bp-ov-lead { font-size: 20px; }
+    .bp-ov h3 { font-size: 18px; }
+    .bp-ov-list li { font-size: 15px; }
+    .bp-res { gap: 12px; }
+    .bp-thumb { width: 72px; height: 72px; }
+    .bp-site-url { max-width: 58vw; }
+    .bp-imgs { columns: 2 140px; }
+    .search-result, .internal-box { max-width: 100%; }
+
+    /* Notificaciones */
+    .toast-container { left: 10px; right: 10px; bottom: 14px; }
+    .toast { width: 100%; }
+}
+
+/* ---------- Móvil pequeño (≤ 380 px) ---------- */
+@media (max-width: 380px) {
+    #btnBookmark { display: none; }
+    .tab { min-width: 92px; }
+    .quick-links { gap: 10px; }
+}
+
+/* ---------- Horizontal en móvil (poca altura) ---------- */
+@media (max-height: 480px) and (orientation: landscape) {
+    .titlebar { height: 36px; }
+    .toolbar { height: 40px; }
+    .edge-logo { display: none; }
+    .modal-content, .login-box { max-height: 96dvh; overflow-y: auto; }
+    .edge-menu { top: 78px; max-height: calc(100dvh - 86px); }
+}
