@@ -1,7 +1,3 @@
-/* =====================================================================
-   PROTOTIPO EDGE - script.js (versión 4)
-   Compatible con el index.html y styles.css (+ styles_add.css) de la v4.
-   ===================================================================== */
 const $ = id => document.getElementById(id);
 const ic = (n, c = '') => `<svg class="ic ${c}"><use href="#i-${n}"/></svg>`;
 const CPL = '<svg class="cp-logo"><use href="#copilot-logo"/></svg>';
