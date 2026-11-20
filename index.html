@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microsoft Edge - Prototipo SPA (Single Page Application)</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- SPRITE DE ICONOS (estilo Fluent: trazo de 1.6 px) -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+        <defs>
+            <linearGradient id="cpG1" x1="3" y1="4" x2="19" y2="30" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#26C6F0"/><stop offset="0.5" stop-color="#2B7BF2"/><stop offset="1" stop-color="#7B4FF0"/>
+            </linearGradient>
+            <linearGradient id="cpG2" x1="14" y1="2" x2="30" y2="30" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#8E5AF5"/><stop offset="0.5" stop-color="#F0508E"/><stop offset="1" stop-color="#FFB22E"/>
+            </linearGradient>
+            <linearGradient id="cpG3" x1="10" y1="8" x2="24" y2="26" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#34D399"/><stop offset="1" stop-color="#2B7BF2" stop-opacity="0"/>
+            </linearGradient>
+            <symbol id="copilot-logo" viewBox="0 0 32 32">
+                <path d="M10.6 3.2c-1.7 0-3.2 1.1-3.7 2.8L3.1 18.9c-.8 2.8 1.2 5.6 4.1 5.6h3.2c1.9 0 3.6-1.3 4.1-3.1l1.3-4.5-3-9.9c-.5-1.7-2-2.8-3.7-2.8z" fill="url(#cpG1)"/>
+                <path d="M21.4 8.1c1.7 0 3.2 1.1 3.7 2.8l3.8 12.4c.8 2.8-1.2 5.6-4.1 5.6h-3.2c-1.9 0-3.6-1.3-4.1-3.1l-3.9-12.9c-.5-1.7.1-3.5 1.5-4.5.6-.5 1.4-.8 2.2-.8h4.1z" fill="url(#cpG2)"/>
+                <path d="M14.6 13.4l1.9 6.3 1.8-4.4c-.3-1.3-1.3-2.2-2.6-2.2z" fill="url(#cpG3)" opacity="0.9"/>
+            </symbol>
+            <symbol id="i-back" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></symbol>
+            <symbol id="i-forward" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+            <symbol id="i-refresh" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.5 15a9 9 0 1 1-2.1-9.4L23 10"/></symbol>
+            <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></symbol>
+            <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+            <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><line x1="12" y1="8" x2="12.01" y2="8"/></symbol>
+            <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+            <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></symbol>
+            <symbol id="i-star" viewBox="0 0 24 24"><polygon points="12 2.5 15 8.8 22 9.7 17 14.5 18.2 21.5 12 18.2 5.8 21.5 7 14.5 2 9.7 9 8.8"/></symbol>
+            <symbol id="i-favlist" viewBox="0 0 24 24"><polygon points="9.5 3 11.9 8 17.4 8.7 13.4 12.5 14.4 18 9.5 15.4 4.6 18 5.6 12.5 1.6 8.7 7.1 8"/><line x1="15" y1="17" x2="22" y2="17"/><line x1="15" y1="13" x2="22" y2="13"/><line x1="17" y1="21" x2="22" y2="21"/></symbol>
+            <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
+            <symbol id="i-puzzle" viewBox="0 0 24 24"><path d="M5 8h4V6a2 2 0 1 1 4 0v2h4a1 1 0 0 1 1 1v4h-2a2 2 0 1 0 0 4h2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/></symbol>
+            <symbol id="i-dots" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.4" fill="currentColor"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/><circle cx="19" cy="12" r="1.4" fill="currentColor"/></symbol>
+            <symbol id="i-newtab" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="8" cy="12" r=".8" fill="currentColor"/><circle cx="12" cy="12" r=".8" fill="currentColor"/><circle cx="16" cy="12" r=".8" fill="currentColor"/></symbol>
+            <symbol id="i-window" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2.5"/><line x1="3" y1="9" x2="21" y2="9"/></symbol>
+            <symbol id="i-inprivate" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M6.5 14.5c1-1 3-1 4 0M13.5 14.5c1-1 3-1 4 0"/><line x1="3" y1="9" x2="21" y2="9"/></symbol>
+            <symbol id="i-zoom" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/><line x1="11" y1="8" x2="11" y2="14"/></symbol>
+            <symbol id="i-history" viewBox="0 0 24 24"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><polyline points="3 4 3 9 8 9"/><polyline points="12 7.5 12 12 15 14"/></symbol>
+            <symbol id="i-tabgroup" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="12" rx="2.5"/><path d="M3 11h8"/><line x1="6" y1="4" x2="10" y2="4"/></symbol>
+            <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><line x1="11" y1="12" x2="20" y2="3"/><line x1="16.5" y1="6.5" x2="19" y2="9"/></symbol>
+            <symbol id="i-trash" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></symbol>
+            <symbol id="i-print" viewBox="0 0 24 24"><polyline points="6 9 6 3 18 3 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7"/></symbol>
+            <symbol id="i-translate" viewBox="0 0 24 24"><path d="M3 6h9M7.5 4v2M5 6c0 4 3 7 7 8M11 6c-1 4-4 7-8 8"/><path d="M12.5 21l4-10 4 10M14 18h5"/></symbol>
+            <symbol id="i-split" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2.5"/><line x1="12" y1="4" x2="12" y2="20"/></symbol>
+            <symbol id="i-shot" viewBox="0 0 24 24"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="3"/></symbol>
+            <symbol id="i-find" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h4"/><polyline points="14 3 14 8 19 8"/><circle cx="16" cy="16" r="3"/><line x1="21" y1="21" x2="18.2" y2="18.2"/></symbol>
+            <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></symbol>
+            <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.1 9.2a3 3 0 0 1 5.8 1c0 2-2.9 2.5-2.9 4.3"/><line x1="12" y1="17.5" x2="12.01" y2="17.5"/></symbol>
+            <symbol id="i-chevron" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></symbol>
+            <symbol id="i-check" viewBox="0 0 24 24"><polyline points="5 12.5 10 17.5 19 7"/></symbol>
+            <symbol id="i-x" viewBox="0 0 24 24"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></symbol>
+            <symbol id="i-plus" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+            <symbol id="i-minus" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+            <symbol id="i-expand" viewBox="0 0 24 24"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></symbol>
+            <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></symbol>
+            <symbol id="i-thumbup" viewBox="0 0 24 24"><path d="M7 11v9H4a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1zM7 11l4-8a2.5 2.5 0 0 1 2.5 2.5V9h5.2a2 2 0 0 1 2 2.3l-1.2 7a2 2 0 0 1-2 1.7H7"/></symbol>
+            <symbol id="i-thumbdown" viewBox="0 0 24 24"><path d="M17 13V4h3a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1zM17 13l-4 8a2.5 2.5 0 0 1-2.5-2.5V15H5.3a2 2 0 0 1-2-2.3l1.2-7A2 2 0 0 1 6.5 4H17"/></symbol>
+            <symbol id="i-send" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9"/></symbol>
+            <symbol id="i-menu" viewBox="0 0 24 24"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="17" x2="17" y2="17"/></symbol>
+            <symbol id="i-paperclip" viewBox="0 0 24 24"><path d="M21 11.5l-8.6 8.6a5 5 0 0 1-7-7l8.6-8.6a3.4 3.4 0 0 1 4.8 4.8l-8.6 8.6a1.7 1.7 0 0 1-2.4-2.4l7.9-7.9"/></symbol>
+            <symbol id="i-sync" viewBox="0 0 24 24"><path d="M20 12a8 8 0 0 0-13.7-5.6L4 8.5"/><polyline points="4 3.5 4 8.5 9 8.5"/><path d="M4 12a8 8 0 0 0 13.7 5.6L20 15.5"/><polyline points="20 20.5 20 15.5 15 15.5"/></symbol>
+            <symbol id="i-personcog" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.7 3.2-5.5 6.5-5.5 1.2 0 2.3.2 3.2.7"/><circle cx="18" cy="17" r="2.2"/><path d="M18 13.3v1.3M18 19.4v1.3M21.2 15.2l-1.1.6M15.9 18.2l-1.1.6M21.2 18.8l-1.1-.6M15.9 15.8l-1.1-.6"/></symbol>
+            <symbol id="i-personplus" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.7 3.2-5.5 6.5-5.5 1.2 0 2.3.2 3.2.7"/><line x1="18" y1="14" x2="18" y2="20"/><line x1="15" y1="17" x2="21" y2="17"/></symbol>
+            <symbol id="i-personq" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.7 3.2-5.5 6.5-5.5 1.2 0 2.3.2 3.2.7"/><circle cx="18" cy="17" r="4"/><path d="M16.8 15.9a1.3 1.3 0 0 1 2.4.5c0 .9-1.2 1.1-1.2 1.9M18 19.4v.01"/></symbol>
+            <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.2 8-8 9-4.8-1-8-4.5-8-9V6z"/><polyline points="8.5 12 11 14.5 15.5 9.5"/></symbol>
+            <symbol id="i-bolt" viewBox="0 0 24 24"><polygon points="13 2 4 14 11 14 10 22 20 9 13 9"/></symbol>
+            <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></symbol>
+            <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+            <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.8 3 2.8 15 0 18M12 3c-2.8 3-2.8 15 0 18"/></symbol>
+            <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><polyline points="14 3 14 8 19 8"/></symbol>
+            <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><polyline points="21 16 15 10 5 20"/></symbol>
+            <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+            <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M4 20l4-1 11-11a2.1 2.1 0 0 0-3-3L5 16z"/><line x1="14" y1="7" x2="17" y2="10"/></symbol>
+            <symbol id="i-code" viewBox="0 0 24 24"><polyline points="8 6 2 12 8 18"/><polyline points="16 6 22 12 16 18"/></symbol>
+            <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 17v5M8 3h8l-1 7 3 3v2H6v-2l3-3z"/></symbol>
+        </defs>
+    </svg>
+
+    <!-- PANTALLA DE LOGIN / SELECTOR DE PERFILES EN PC COMPARTIDA -->
+    <div class="login-overlay" id="loginScreen">
+        <div class="login-box">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/9/98/Microsoft_Edge_logo_%282019%29.svg" alt="Edge" width="54">
+            <h2>¿Quién está usando Edge?</h2>
+            <p>Protege tu perfil con un PIN o entra sin él</p>
+
+            <!-- LISTA DE PERFILES GUARDADOS + BOTÓN INVITADO -->
+            <div class="profiles-grid" id="savedProfilesGrid">
+                <!-- Se genera dinámicamente desde script.js -->
+            </div>
+
+            <!-- SUBVISTA 1: INGRESAR PIN DEL PERFIL SELECCIONADO -->
+            <div class="auth-subpanel" id="pinUnlockBox" style="display: none;">
+                <div class="selected-profile-badge">
+                    <span id="pinTargetAvatar" class="mini-avatar">U</span>
+                    <div style="text-align: left;">
+                        <strong id="pinTargetName" style="display:block; font-size:14px;">Usuario</strong>
+                        <span id="pinTargetEmail" style="font-size:11px; color:#888;">correo@ejemplo.com</span>
+                    </div>
+                </div>
+                <input type="password" id="unlockPinInput" maxlength="4" inputmode="numeric" placeholder="Ingresa tu PIN de 4 dígitos" class="pin-input">
+                <p class="pin-error" id="pinError" style="display:none;"></p>
+                <div class="auth-actions">
+                    <button class="secondary-btn" id="btnCancelPin">Volver</button>
+                    <button class="primary-btn" id="btnConfirmPin">Desbloquear</button>
+                </div>
+                <button class="link-btn" id="btnForgotPin" type="button">¿Olvidaste tu PIN?</button>
+            </div>
+
+            <!-- SUBVISTA 3: RECUPERAR PIN OLVIDADO (código por correo) -->
+            <div class="auth-subpanel" id="recoverBox" style="display: none;">
+                <div class="selected-profile-badge">
+                    <span id="recAvatar" class="mini-avatar">U</span>
+                    <div style="text-align: left;">
+                        <strong id="recName" style="display:block; font-size:14px;">Usuario</strong>
+                        <span id="recEmail" style="font-size:11px; color:#888;">correo@ejemplo.com</span>
+                    </div>
+                </div>
+
+                <!-- Paso 1: confirmar envío -->
+                <div id="recStep1">
+                    <p class="rec-text">Para restablecer tu PIN te enviaremos un código de 6 dígitos a <strong id="recMaskedEmail"></strong></p>
+                    <div class="auth-actions">
+                        <button class="secondary-btn" id="btnRecBack" type="button">Volver</button>
+                        <button class="primary-btn" id="btnRecSend" type="button">Enviar código</button>
+                    </div>
+                    <button class="link-btn" id="btnNoEmailAccess" type="button">No tengo acceso a ese correo</button>
+                </div>
+
+                <!-- Paso 2: ingresar código -->
+                <div id="recStep2" style="display:none;">
+                    <div class="mock-mail">
+                        <div class="mock-mail-hdr">📧 Correo simulado · Microsoft Edge</div>
+                        <div>Tu código de verificación es <strong id="mockMailCode">------</strong></div>
+                        <small>Demostración: en un Edge real este mensaje llegaría a tu bandeja de entrada.</small>
+                    </div>
+                    <input type="text" id="recCodeInput" maxlength="6" inputmode="numeric" placeholder="Código de 6 dígitos" class="pin-input" autocomplete="off">
+                    <div class="auth-actions">
+                        <button class="secondary-btn" id="btnRecResend" type="button">Reenviar código</button>
+                        <button class="primary-btn" id="btnRecVerify" type="button">Verificar</button>
+                    </div>
+                </div>
+
+                <!-- Paso 3: nuevo PIN o quitarlo -->
+                <div id="recStep3" style="display:none;">
+                    <p class="rec-text">✅ Identidad verificada. Crea un PIN nuevo o entra sin PIN.</p>
+                    <input type="password" id="recNewPin" maxlength="4" inputmode="numeric" placeholder="Nuevo PIN de 4 dígitos" class="pin-input">
+                    <input type="password" id="recNewPinConfirm" maxlength="4" inputmode="numeric" placeholder="Confirma el nuevo PIN" class="pin-input">
+                    <div class="auth-actions">
+                        <button class="secondary-btn" id="btnRecRemovePin" type="button">Entrar sin PIN</button>
+                        <button class="primary-btn" id="btnRecSave" type="button">Guardar y entrar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUBVISTA 2: CREAR NUEVO PERFIL CON PIN -->
+            <div class="auth-subpanel" id="createProfileBox" style="display: none;">
+                <input type="text" id="loginName" placeholder="Nombre (ej. Andreé)">
+                <input type="email" id="loginEmail" placeholder="Correo electrónico (se usa para recuperar tu PIN)">
+                <div class="pin-choice" role="radiogroup" aria-label="Protección con PIN">
+                    <label class="pin-opt" id="optPinYes">
+                        <input type="radio" name="pinChoice" value="yes">
+                        <span class="pin-opt-ico">🔒</span>
+                        <span class="pin-opt-txt"><strong>Proteger con PIN</strong><small>Recomendado si compartes el equipo</small></span>
+                    </label>
+                    <label class="pin-opt selected" id="optPinNo">
+                        <input type="radio" name="pinChoice" value="no" checked>
+                        <span class="pin-opt-ico">🔓</span>
+                        <span class="pin-opt-txt"><strong>Sin PIN</strong><small>Entrarás con un solo clic</small></span>
+                    </label>
+                </div>
+                <div id="pinFields" style="display:none;">
+                    <input type="password" id="loginPin" maxlength="4" inputmode="numeric" placeholder="Crea un PIN de 4 dígitos" class="pin-input">
+                    <input type="password" id="loginPinConfirm" maxlength="4" inputmode="numeric" placeholder="Confirma tu PIN" class="pin-input">
+                    <p class="pin-hint">Si olvidas tu PIN, podrás restablecerlo con un código enviado a tu correo.</p>
+                </div>
+                <p class="pin-hint" id="noPinHint">Cualquier persona que use este equipo podrá abrir tu perfil. Puedes agregar un PIN más tarde desde la configuración del perfil.</p>
+                <div class="auth-actions">
+                    <button class="secondary-btn" id="btnCancelCreate">Cancelar</button>
+                    <button class="primary-btn" id="btnLogin">Crear y entrar</button>
+                </div>
+            </div>
+
+            <div class="guest-divider"><span>o navega sin dejar rastro</span></div>
+            <button class="guest-btn" id="btnGuestMode">
+                <span>🕵️</span> Entrar como Invitado (sin PIN ni historial)
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL DE ONBOARDING (Iteración 1 - Sección 4.2) -->
+    <div class="modal-overlay" id="onboardingModal" style="display:none;">
+        <div class="modal-content">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/9/98/Microsoft_Edge_logo_%282019%29.svg" alt="Edge Logo" width="50">
+            <h2>Configura tu experiencia</h2>
+            <p style="font-size: 13px; color: #888; margin-top: 4px;">Elige cómo quieres ver tu pantalla de inicio. Puedes cambiarlo cuando quieras.</p>
+            <div class="modal-options">
+                <button class="modal-card active" id="btnFocused">
+                    <span class="modal-icon">🎯</span>
+                    <h3>Enfocada</h3>
+                    <p>sin noticias ni widgets</p>
+                </button>
+                <button class="modal-card" id="btnNews">
+                    <span class="modal-icon">📰</span>
+                    <h3>Informativa</h3>
+                    <p>con noticias y sugerencias</p>
+                </button>
+            </div>
+            <button class="primary-btn" id="startBrowsingBtn">Comenzar a navegar</button>
+        </div>
+    </div>
+
+    <!-- INTERFAZ PRINCIPAL -->
+    <div class="titlebar"><div class="tabs-container" id="tabsContainer"></div><span class="inprivate-badge" id="inprivateBadge" style="display:none;">InPrivate</span></div>
+
+    <div class="toolbar">
+        <div class="nav-arrows">
+            <button class="tool-btn" id="btnBack" title="Atrás (Alt+←)"><svg class="ic"><use href="#i-back"/></svg></button>
+            <button class="tool-btn" id="btnForward" title="Adelante (Alt+→)"><svg class="ic"><use href="#i-forward"/></svg></button>
+            <button class="tool-btn" id="btnRefresh" title="Recargar (F5)"><svg class="ic"><use href="#i-refresh"/></svg></button>
+            <button class="tool-btn" id="btnHome" title="Página principal"><svg class="ic"><use href="#i-home"/></svg></button>
+        </div>
+        <div class="address-bar">
+            <span class="addr-icon" id="addrIcon"><svg class="ic"><use href="#i-search"/></svg></span>
+            <input type="text" id="urlInput" value="" placeholder="Buscar en la web o escribir una dirección web">
+            <button class="tool-btn star-btn" id="btnBookmark" title="Agregar esta pestaña a favoritos (Ctrl+D)"><svg class="ic"><use href="#i-star"/></svg></button>
+        </div>
+        <div class="extensions-profile">
+            <button class="tool-btn panel-trigger" data-panel="favoritesPanel" id="btnFavPanel" title="Favoritos (Ctrl+Mayús+O)"><svg class="ic"><use href="#i-favlist"/></svg></button>
+            <button class="tool-btn panel-trigger" data-panel="downloadsPanel" id="btnDownloads" title="Descargas (Ctrl+J)" style="display:none;"><svg class="ic"><use href="#i-download"/></svg><span class="dl-badge" id="dlBadge" style="display:none;"></span></button>
+            <button class="tool-btn panel-trigger" data-panel="extensionsPanel" id="btnExtensions" title="Extensiones"><svg class="ic"><use href="#i-puzzle"/></svg></button>
+            <button class="profile-btn panel-trigger" data-panel="profilePanel" id="userAvatarBtn" title="Perfil"></button>
+            <button class="tool-btn panel-trigger" data-panel="settingsMenu" id="settingsToggle" title="Configuración y más (Alt+F)"><svg class="ic"><use href="#i-dots"/></svg></button>
+            <button class="copilot-btn" id="btnCopilot" title="Copilot"><svg class="cp-logo"><use href="#copilot-logo"/></svg><span>Chat</span></button>
+        </div>
+    </div>
+
+    <!-- BARRA DE CARGA -->
+    <div class="loading-bar-container"><div id="loadingBar" class="loading-bar"></div></div>
+
+    <!-- BARRA DE BÚSQUEDA EN LA PÁGINA (Ctrl+F) -->
+    <div class="find-bar" id="findBar">
+        <input type="text" id="findInput" placeholder="Buscar en la página">
+        <span class="find-count" id="findCount">0/0</span>
+        <button class="tool-btn sm" id="findPrev" title="Anterior (Mayús+Enter)"><svg class="ic" style="transform:rotate(-90deg)"><use href="#i-chevron"/></svg></button>
+        <button class="tool-btn sm" id="findNext" title="Siguiente (Enter)"><svg class="ic" style="transform:rotate(90deg)"><use href="#i-chevron"/></svg></button>
+        <button class="tool-btn sm" id="findClose" title="Cerrar (Esc)"><svg class="ic"><use href="#i-x"/></svg></button>
+    </div>
+
+    <div class="content-row">
+        <!-- VISTAS -->
+        <div class="viewport" id="viewport">
+            <!-- VISTA HOME -->
+            <div class="view" id="view-home">
+                <div class="center-stage">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/9/98/Microsoft_Edge_logo_%282019%29.svg" alt="Edge Logo" class="edge-logo">
+                    <div class="inprivate-banner" id="inprivateBanner" style="display:none;">
+                        <strong>Estás navegando con InPrivate</strong>
+                        <span>Edge no guardará tu historial, cookies ni datos de sitios al cerrar todas las ventanas InPrivate.</span>
+                    </div>
+                    <div class="big-search-box">
+                        <span class="search-icon"><svg class="ic"><use href="#i-search"/></svg></span>
+                        <input type="text" id="mainSearchInput" placeholder="Buscar en la web (Presiona Enter)">
+                        <span class="mic-icon" title="Búsqueda por voz"><svg class="ic"><use href="#i-mic"/></svg></span>
+                    </div>
+                    <div class="quick-links" id="quickLinksContainer">
+                        <!-- Se renderiza dinámicamente (máximo 4 accesos directos) -->
+                    </div>
+
+                    <!-- FEED DE NOTICIAS (Solo visible si el usuario activa Experiencia Informativa) -->
+                    <div class="news-feed-container" id="newsFeedContainer" style="display: none;">
+                        <div class="news-feed-header">
+                            <span>📰 Noticias y sugerencias (Opt-in activado)</span>
+                            <button class="news-hide-btn" id="btnQuickHideNews">Ocultar feed</button>
+                        </div>
+                        <div class="news-cards-grid">
+                            <div class="news-card">
+                                <span class="news-tag">Tecnología</span>
+                                <h4>Nuevas herramientas de productividad para estudiantes universitarios</h4>
+                                <p>MSN Noticias · Hace 2 h</p>
+                            </div>
+                            <div class="news-card">
+                                <span class="news-tag">Ciencia</span>
+                                <h4>Avances en eficiencia energética para laptops y dispositivos móviles</h4>
+                                <p>MSN Ciencia · Hace 4 h</p>
+                            </div>
+                            <div class="news-card">
+                                <span class="news-tag">Actualidad</span>
+                                <h4>Resumen del día: tendencias en desarrollo web y diseño UX</h4>
+                                <p>MSN Hoy · Hace 5 h</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="customize-btn" id="customizeBtn"><svg class="ic" style="width:14px;height:14px;vertical-align:-2px"><use href="#i-pencil"/></svg> Personalizar vista</button>
+            </div>
+
+            <!-- VISTA BÚSQUEDA -->
+            <div class="view" id="view-search">
+                <div class="bing-page" id="bingPage"></div>
+            </div>
+
+            <!-- VISTA INTERNA (Configuración, Contraseñas, Extensiones, Historial, Descargas, Favoritos, Ayuda) -->
+            <div class="view" id="view-internal">
+                <div class="internal-content">
+                    <h2 class="internal-header"><span id="internalIcon">⚙️</span> <span id="internalTitle">Configuración</span></h2>
+                    <div id="internalSettingsContainer" class="internal-box"></div>
+                </div>
+            </div>
+
+            <!-- PANEL SECUNDARIO DE LA VISTA DIVIDIDA -->
+            <div class="split-pane" id="splitPane" style="display:none;">
+                <div class="split-bar">
+                    <span>Vista dividida</span>
+                    <button class="tool-btn sm" id="splitClose" title="Cerrar vista dividida"><svg class="ic"><use href="#i-x"/></svg></button>
+                </div>
+                <div class="split-body" id="splitBody"></div>
+            </div>
+        </div>
+
+        <!-- PANEL LATERAL DE COPILOT -->
+        <aside class="copilot-panel" id="copilotPanel" aria-label="Copilot">
+            <div class="cp-header">
+                <button class="cp-icon-btn" id="cpHistoryBtn" title="Chats anteriores"><svg class="ic"><use href="#i-menu"/></svg></button>
+                <div class="cp-header-right">
+                    <button class="cp-icon-btn" id="cpMoreBtn" title="Más opciones"><svg class="ic"><use href="#i-dots"/></svg></button>
+                    <button class="cp-icon-btn" id="cpCloseBtn" title="Cerrar"><svg class="ic"><use href="#i-x"/></svg></button>
+                </div>
+                <div class="cp-menu" id="cpMenu"></div>
+            </div>
+            <div class="cp-body" id="cpBody"></div>
+            <div class="cp-chips" id="cpChips"></div>
+            <div class="cp-input">
+                <button class="cp-plus" id="cpPlusBtn" title="Agregar"><svg class="ic"><use href="#i-plus"/></svg></button>
+                <input type="text" id="cpInput" placeholder="Enviar un mensaje a Copilot" autocomplete="off">
+                <button class="cp-send" id="cpSendBtn" title="Enviar"><svg class="ic"><use href="#i-send"/></svg></button>
+                <div class="cp-menu cp-plus-menu" id="cpPlusMenu"></div>
+            </div>
+            <input type="file" id="cpFile" style="display:none;">
+        </aside>
+    </div>
+
+    <!-- HERRAMIENTAS PARA DESARROLLADORES (F12) -->
+    <div class="devtools" id="devtools" style="display:none;">
+        <div class="dev-tabs">
+            <button class="dev-tab active" data-dev="elements">Elementos</button>
+            <button class="dev-tab" data-dev="console">Consola</button>
+            <span style="flex:1"></span>
+            <button class="tool-btn sm" id="devClose" title="Cerrar"><svg class="ic"><use href="#i-x"/></svg></button>
+        </div>
+        <pre class="dev-pane" id="devElements"></pre>
+        <div class="dev-pane" id="devConsole" style="display:none;">
+            <div id="devConsoleOut"></div>
+            <div class="dev-console-input"><span>&gt;</span><input type="text" id="devConsoleIn" placeholder="Escribe una expresión JavaScript y presiona Enter"></div>
+        </div>
+    </div>
+
+    <!-- PANELES FLOTANTES -->
+
+    <!-- Menú principal "Configuración y más" (se construye desde script.js con las opciones reales de Edge) -->
+    <div class="flyout-panel edge-menu" id="settingsMenu"></div>
+
+    <!-- Historial -->
+    <div class="flyout-panel edge-panel" id="historyPanel" style="top: 86px; right: 70px; width: 360px;">
+        <div class="flyout-header"><span>Historial</span>
+            <div class="hdr-actions">
+                <button class="tool-btn sm" id="histOpenPage" title="Abrir la página de historial"><svg class="ic"><use href="#i-expand"/></svg></button>
+                <button class="tool-btn sm" id="histClearAll" title="Borrar historial"><svg class="ic"><use href="#i-trash"/></svg></button>
+            </div>
+        </div>
+        <div class="panel-search"><svg class="ic"><use href="#i-search"/></svg><input type="text" id="historySearch" placeholder="Buscar en el historial"></div>
+        <div style="padding: 4px 6px 10px;">
+            <div class="flyout-list" id="historyListContainer"></div>
+        </div>
+    </div>
+
+    <!-- Descargas -->
+    <div class="flyout-panel edge-panel" id="downloadsPanel" style="top: 86px; right: 90px; width: 360px;">
+        <div class="flyout-header"><span>Descargas</span>
+            <div class="hdr-actions">
+                <button class="tool-btn sm" id="dlOpenPage" title="Abrir la página de descargas"><svg class="ic"><use href="#i-expand"/></svg></button>
+                <button class="tool-btn sm" id="dlClearAll" title="Borrar todas las descargas"><svg class="ic"><use href="#i-trash"/></svg></button>
+            </div>
+        </div>
+        <div class="flyout-list" id="downloadsListContainer" style="padding: 6px;"></div>
+    </div>
+
+    <!-- Extensiones -->
+    <div class="flyout-panel edge-panel" id="extensionsPanel" style="top: 86px; right: 120px; width: 340px;">
+        <div class="flyout-header"><span>Extensiones</span>
+            <div class="hdr-actions"><button class="tool-btn sm" id="extManage" title="Administrar extensiones"><svg class="ic"><use href="#i-gear"/></svg></button></div>
+        </div>
+        <div class="flyout-list" id="extensionsListContainer" style="padding: 6px;"></div>
+    </div>
+
+    <!-- Favoritos -->
+    <div class="flyout-panel edge-panel" id="favoritesPanel" style="top: 86px; right: 150px; width: 340px;">
+        <div class="flyout-header"><span>Favoritos</span>
+            <div class="hdr-actions">
+                <button class="tool-btn sm" id="favAddCurrent" title="Agregar la página actual a favoritos"><svg class="ic"><use href="#i-plus"/></svg></button>
+                <button class="tool-btn sm" id="favOpenPage" title="Administrar favoritos"><svg class="ic"><use href="#i-expand"/></svg></button>
+            </div>
+        </div>
+        <div class="flyout-list" id="favoritesListContainer" style="padding: 6px;"></div>
+    </div>
+
+    <!-- Perfil (como en Edge + gestión de PIN y bloqueo rápido) -->
+    <div class="flyout-panel edge-panel" id="profilePanel" style="top: 86px; right: 50px; width: 330px;">
+        <div class="profile-card-hdr">
+            <div id="panelAvatar" class="panel-avatar"></div>
+            <h3 id="panelName">Usuario</h3>
+            <p id="panelEmail">correo@ejemplo.com</p>
+            <span id="panelPinBadge" class="pin-status-pill">🔒 Protegido con PIN</span>
+        </div>
+        <div class="menu-list">
+            <button class="menu-item" id="btnPasswords"><svg class="ic"><use href="#i-key"/></svg><span class="mi-label">Contraseñas y autorrellenar</span></button>
+            <button class="menu-item" id="btnProfileSettings"><svg class="ic"><use href="#i-personcog"/></svg><span class="mi-label">Configuración del perfil</span></button>
+            <button class="menu-item" id="btnSyncToggle"><svg class="ic"><use href="#i-sync"/></svg><span class="mi-label" id="syncLabel">La sincronización está activada</span></button>
+            <div class="menu-sep"></div>
+            <button class="menu-item" id="btnNewProfile"><svg class="ic"><use href="#i-personplus"/></svg><span class="mi-label">Configurar un perfil nuevo</span><svg class="ic chev"><use href="#i-chevron"/></svg></button>
+            <button class="menu-item" id="btnGuestFromMenu"><svg class="ic"><use href="#i-personq"/></svg><span class="mi-label">Explorar como invitado</span></button>
+            <div class="menu-sep"></div>
+            <button class="menu-item" id="btnChangePin"><svg class="ic"><use href="#i-key"/></svg><span class="mi-label">Cambiar PIN de acceso</span></button>
+            <button class="menu-item danger" id="btnLogout"><svg class="ic"><use href="#i-lock"/></svg><span class="mi-label">Bloquear / Cambiar perfil</span></button>
+        </div>
+    </div>
+
+    <!-- Panel Lateral Personalización -->
+    <div class="custom-sidebar" id="customSidebar">
+        <div class="sidebar-header">
+            <h3>Personalizar página</h3>
+            <button class="close-sidebar" id="closeSidebar"><svg class="ic"><use href="#i-x"/></svg></button>
+        </div>
+        <div class="sidebar-content">
+            <label class="sidebar-option"><span>Mostrar enlaces rápidos</span><input type="checkbox" checked id="toggleLinks"></label>
+            <label class="sidebar-option"><span>Imagen del día (Fondo)</span><input type="checkbox" checked id="toggleBackground"></label>
+            <label class="sidebar-option"><span>Noticias y sugerencias (MSN)</span><input type="checkbox" id="toggleNewsFeed"></label>
+            <hr style="border:0; border-top:1px solid var(--edge-border); margin:15px 0;">
+            <button class="primary-btn" style="width:100%;" id="btnSaveSidebar">Guardar cambios</button>
+        </div>
+    </div>
+
+    <!-- Captura de pantalla (Ctrl+Mayús+S) -->
+    <div class="shot-overlay" id="shotOverlay" style="display:none;">
+        <div class="shot-toolbar" id="shotToolbar">
+            <span>Captura de pantalla</span>
+            <button class="secondary-btn sm" id="shotArea">Capturar área</button>
+            <button class="secondary-btn sm" id="shotFull">Página completa</button>
+            <button class="tool-btn sm" id="shotCancel" title="Cancelar"><svg class="ic"><use href="#i-x"/></svg></button>
+        </div>
+        <div class="shot-rect" id="shotRect" style="display:none;"></div>
+        <div class="shot-actions" id="shotActions" style="display:none;">
+            <button class="secondary-btn sm" id="shotCopy">Copiar</button>
+            <button class="primary-btn sm" id="shotSave">Guardar</button>
+            <button class="secondary-btn sm" id="shotDiscard">Descartar</button>
+        </div>
+    </div>
+
+    <!-- Pantalla al cerrar Edge -->
+    <div class="closed-screen" id="closedScreen" style="display:none;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/9/98/Microsoft_Edge_logo_%282019%29.svg" width="64" alt="Edge">
+        <h2>Microsoft Edge se ha cerrado</h2>
+        <p>En un equipo real, la ventana se cerraría aquí.</p>
+        <button class="primary-btn" id="reopenEdge">Abrir Microsoft Edge</button>
+    </div>
+
+    <div id="toastContainer" class="toast-container"></div>
+    <script src="script.js"></script>
+</body>
+</html>
