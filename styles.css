@@ -1,4 +1,5 @@
-root {
+/* VARIABLES FLUENT DESIGN */
+:root {
     --edge-bg-top: #DEE1E6; 
     --edge-toolbar: #FFFFFF;
     --edge-tab-active: #FFFFFF;
@@ -674,3 +675,59 @@ html { -webkit-text-size-adjust: 100%; }
     .modal-content, .login-box { max-height: 96dvh; overflow-y: auto; }
     .edge-menu { top: 78px; max-height: calc(100dvh - 86px); }
 }
+
+
+/* =====================================================================
+   CORRECCIONES DE TEMA (claro / oscuro / InPrivate) - contraste y switches
+   ===================================================================== */
+:root {
+    --muted-text: #5F5F5F; --accent-text: #005FB8; --danger: #C50F1F; --danger-hover-fg: #FFFFFF;
+    --sw-border: #616161; --sw-knob-off: #616161; --sw-on: #005FB8; --sw-knob-on: #FFFFFF;
+    --badge-on-bg: rgba(0, 95, 184, 0.14);
+}
+body.dark-mode, body.inprivate {
+    --muted-text: #B3B3B3; --accent-text: #7FC6FF; --danger: #FF8A94; --danger-hover-fg: #2B0004;
+    --sw-border: #A6A6A6; --sw-knob-off: #D0D0D0; --sw-on: #60CDFF; --sw-knob-on: #0A0A0A;
+    --badge-on-bg: rgba(96, 205, 255, 0.16);
+}
+body.inprivate { --accent-text: #CDBBFF; --sw-on: #A98BFF; --sw-knob-on: #1B1030; --badge-on-bg: rgba(169, 139, 255, 0.2); }
+
+/* Switches: siempre visibles en cualquier tema */
+.switch { width: 44px; height: 22px; flex-shrink: 0; }
+.switch .slider { background-color: transparent; border: 1.5px solid var(--sw-border); border-radius: 22px; }
+.switch .slider:before { height: 14px; width: 14px; left: 3px; top: 50%; bottom: auto; background-color: var(--sw-knob-off); transform: translate(0, -50%); }
+.switch input:checked + .slider { background-color: var(--sw-on); border-color: var(--sw-on); }
+.switch input:checked + .slider:before { background-color: var(--sw-knob-on); transform: translate(21px, -50%); }
+.switch input:focus-visible + .slider { outline: 2px solid var(--accent-text); outline-offset: 2px; }
+
+/* Textos secundarios con contraste suficiente */
+.login-box p, .profile-card-lock, .guest-divider, .modal-card p, .news-card p, .setting-info p,
+.list-item .time, .empty-state, .pin-opt-txt small, .pin-hint, .mock-mail small, .dlg-lbl,
+.status-badge.off { color: var(--muted-text); }
+.login-box span.or, .login-box .guest-divider span { color: var(--muted-text); }
+
+/* Enlaces y acentos de texto */
+.btn-link, .dl-link, .flyout-header a, .news-tag, .result-dl, .bp-brand, .bp-note a, .cp-send,
+.cp-tools button.on, .ext-ico, .link-btn, .mock-mail-hdr, .pin-status-pill, .modal-card.active .modal-icon { color: var(--accent-text); }
+.status-badge.on { color: var(--accent-text); background: var(--badge-on-bg); }
+.pin-status-pill { background: var(--badge-on-bg); }
+
+/* Botones y elementos de peligro */
+.danger-btn { color: var(--danger); border-color: var(--danger); }
+.danger-btn:hover { background-color: var(--danger); color: var(--danger-hover-fg); }
+.menu-item.danger, .menu-item.danger .mi-label { color: var(--danger); }
+
+/* Iniciales de favoritos: oscurece el fondo para que la letra blanca se lea */
+.fav-ico { box-shadow: inset 0 0 0 100px rgba(0, 0, 0, 0.22); }
+
+/* Nueva pestaña: texto legible con o sin imagen de fondo */
+#view-home:not(.nobg) { background-color: #1b2430; }
+.customize-btn { background-color: rgba(20, 20, 20, 0.72); }
+#view-home.nobg .quick-link { color: var(--edge-text); text-shadow: none; }
+#view-home.nobg .quick-link-icon { background-color: var(--edge-tab-hover); border-color: var(--edge-border); backdrop-filter: none; }
+#view-home.nobg .quick-link-icon.dashed { background: transparent; border-color: var(--muted-text); color: var(--edge-text); }
+#view-home.nobg .customize-btn { background-color: var(--edge-toolbar); color: var(--edge-text); border-color: var(--edge-border); }
+#view-home.nobg .customize-btn:hover { background-color: var(--edge-tab-hover); }
+
+/* Avisos (toast) siempre legibles: fondo sólido en cualquier tema */
+.toast { background-color: var(--menu-bg); backdrop-filter: none; -webkit-backdrop-filter: none; border: 1px solid var(--edge-border); }
