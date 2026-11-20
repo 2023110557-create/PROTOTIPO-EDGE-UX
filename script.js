@@ -905,8 +905,8 @@ function section(s) {
     if (s === 'newtab') return '<h3>Página de inicio y nuevas pestañas</h3>' + card(sel('experience', 'Experiencia de la página', 'Enfocada: sin noticias. Informativa: con noticias y sugerencias.', [['focused', 'Enfocada'], ['informative', 'Informativa']]) + tog('showLinks', 'Mostrar accesos directos', 'Hasta 4 sitios en tu nueva pestaña.') + tog('showBg', 'Imagen del día', 'Muestra la imagen de fondo.')) + '<h3>Accesos directos</h3>' + card(U.quickLinks.map((l, i) => row(`${esc(l.icon)} ${esc(l.name)}`, esc(l.url), btn('qdel', 'Quitar', 'secondary-btn sm', i))).join('') + row('Agregar acceso directo', `${U.quickLinks.length}/4 en uso`, btn('qadd', 'Agregar', 'primary-btn sm')));
     if (s === 'search') return '<h3>Búsqueda</h3>' + card(sel('searchEngine', 'Buscador predeterminado', 'Edge respetará tu elección sin mostrar mensajes insistentes.', [['Bing', 'Microsoft Bing'], ['Google', 'Google'], ['DuckDuckGo', 'DuckDuckGo']]));
     if (s === 'performance') {
-        const ram = navigator.deviceMemory ? `${navigator.deviceMemory} GB` : '8 GB (estimada)', cores = navigator.hardwareConcurrency ? `${navigator.hardwareConcurrency} núcleos lógicos` : '8 núcleos lógicos', sleeping = U.memorySaver ? Math.max(0, tabs.length - 1) : 0;
-        return '<h3>Rendimiento y memoria</h3>' + card(`<div style="padding:14px 0;font-size:13px;line-height:1.7">Memoria RAM: <strong>${ram}</strong><br>Procesador: <strong>${cores}</strong><br>Plataforma: <strong>${esc(navigator.platform || 'Win32')}</strong><br>Pestañas abiertas: <strong>${tabs.length}</strong> · Suspendidas: <strong>${sleeping}</strong></div>` + tog('efficiencyMode', 'Modo de eficiencia', 'Minimiza el uso de energía reduciendo recursos de pestañas inactivas.') + tog('memorySaver', 'Ahorro de memoria', `Libera RAM (${ram}) al suspender pestañas en segundo plano.`));
+        const dm = navigator.deviceMemory, ram = dm ? (dm >= 8 ? '8 GB o más' : `${dm} GB`) : 'No disponible en este navegador', cores = navigator.hardwareConcurrency ? `${navigator.hardwareConcurrency} núcleos lógicos` : 'No disponible', sleeping = U.memorySaver ? Math.max(0, tabs.length - 1) : 0, m = pfNow();
+        return '<h3>Rendimiento y memoria</h3>' + card(`<div style="padding:14px 0;font-size:13px;line-height:1.9">Memoria RAM del dispositivo: <strong>${ram}</strong><br>Procesador: <strong>${cores}</strong><br>Velocidad de CPU (prueba rápida): <strong>${pfBench()} puntos</strong><br>Memoria usada por el prototipo: <strong id="pfHeap">${m.heap}</strong><br>Fluidez: <strong id="pfFps">${m.fps}</strong><br>Batería: <strong id="pfBat">${m.bat}</strong><br>Conexión: <strong id="pfNet">${m.net}</strong><br>Plataforma: <strong>${esc(navigator.userAgentData?.platform || navigator.platform || 'Desconocida')}</strong><br>Pestañas abiertas: <strong>${tabs.length}</strong> · Suspendidas: <strong>${sleeping}</strong><br><span style="opacity:.7;font-size:12px">Datos reales leídos de tu dispositivo. Por privacidad, los navegadores redondean la RAM (máx. 8 GB).</span></div>` + tog('efficiencyMode', 'Modo de eficiencia', 'Minimiza el uso de energía reduciendo recursos de pestañas inactivas.') + tog('memorySaver', 'Ahorro de memoria', `Libera RAM (${ram}) al suspender pestañas en segundo plano.`));
     }
     if (s === 'downloads') return '<h3>Descargas</h3>' + card(row('Ubicación', 'C:\\Users\\' + esc(U.name) + '\\Descargas') + tog('askDownload', 'Preguntar dónde guardar cada archivo', 'Edge te pedirá una carpeta antes de descargar.') + row('Historial de descargas', `${U.downloads.length} archivo(s)`, btn('goto', 'Ver descargas', 'secondary-btn sm', 'downloads')));
     if (s === 'copilot') return '<h3>Copilot y barra lateral</h3>' + card(tog('showCopilotBtn', 'Mostrar el botón de Copilot', 'Muestra el botón "Chat" en la barra de herramientas.') + tog('copilotContext', 'Usar el contenido de la página', 'Permite a Copilot leer la pestaña actual para resumirla.') + tog('copilotSuggest', 'Mostrar sugerencias de mensajes', 'Muestra ideas al abrir un chat nuevo.') + row('Chats guardados', `${U.chats.length} conversación(es)`, btn('cpclear', 'Borrar chats', 'danger-btn')));
@@ -993,3 +993,32 @@ document.addEventListener('keydown', e => {
 // ---------- 18. INICIO ----------
 document.body.classList.add('dark-mode');
 renderProfileSelector();
+
+// ---------- MÉTRICAS REALES DEL DISPOSITIVO ----------
+const PF = { fps: null, bat: null, score: null };
+function pfBench() {
+    if (PF.score === null) { const t = performance.now(); let x = 0, n = 0; while (performance.now() - t < 40) { for (let i = 0; i < 20000; i++) x += Math.sqrt(i) * Math.sin(i); n++; } PF.score = Math.round(n * 20000 / 1000); }
+    return PF.score;
+}
+function pfNow() {
+    const pm = performance.memory, c = navigator.connection, b = PF.bat;
+    return {
+        heap: pm ? `${(pm.usedJSHeapSize / 1048576).toFixed(0)} MB de ${(pm.jsHeapSizeLimit / 1048576).toFixed(0)} MB` : 'No disponible (solo Chrome/Edge)',
+        fps: PF.fps ? `${PF.fps} FPS` : 'midiendo…',
+        bat: b ? `${Math.round(b.level * 100)} %${b.charging ? ' (cargando)' : ''}` : 'No disponible en este navegador',
+        net: c ? `${c.effectiveType || '?'}${c.downlink ? ' · ' + c.downlink + ' Mbps' : ''}` : 'No disponible en este navegador'
+    };
+}
+(function pfLive() {
+    let frames = 0, last = performance.now();
+    if (navigator.getBattery) navigator.getBattery().then(b => { PF.bat = b; }).catch(() => { });
+    (function loop(t) {
+        frames++;
+        if (t - last >= 1000) {
+            PF.fps = Math.round(frames * 1000 / (t - last)); frames = 0; last = t;
+            const m = pfNow();
+            [['pfHeap', m.heap], ['pfFps', m.fps], ['pfBat', m.bat], ['pfNet', m.net]].forEach(([id, v]) => { const e = document.getElementById(id); if (e) e.textContent = v; });
+        }
+        requestAnimationFrame(loop);
+    })(last);
+})();
